@@ -1,4 +1,4 @@
-package lk.pluspro.cordova.plugins;
+package lk.nsoft.cordova.plugins;
 
 import org.apache.cordova.CordovaPlugin;
 
@@ -43,6 +43,11 @@ public class Payhere extends CordovaPlugin {
     }
 
     private void checkout(String message, CallbackContext callbackContext) {
+        // if (message != null && message.length() > 0) {
+        //     callbackContext.success(message);
+        // } else {
+        //     callbackContext.error("Expected one non-empty string argument.");
+        // }
         LOG.d(TAG, message);
         this.callbackContext = callbackContext;
         InitRequest req = new InitRequest();
@@ -66,7 +71,7 @@ public class Payhere extends CordovaPlugin {
             req.getCustomer().getDeliveryAddress().setAddress(data.getJSONObject("shipping").getString("address"));
             req.getCustomer().getDeliveryAddress().setCity(data.getJSONObject("shipping").getString("city"));
             req.getCustomer().getDeliveryAddress().setCountry(data.getJSONObject("shipping").getString("country"));
-           // req.getItems().add(new Item(null, "Door bell wireless", 1));
+            //req.getItems().add(new Item(null, "Door bell wireless", 1));
         } catch (JSONException $je) {
             callbackContext.error("Invalid data!");
         }
@@ -93,6 +98,7 @@ public class Payhere extends CordovaPlugin {
                 this.callbackContext.success(msg);
             }
             LOG.d(TAG, msg);
+            //textView.setText(msg);
         }
     }
 

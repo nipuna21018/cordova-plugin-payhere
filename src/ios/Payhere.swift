@@ -1,4 +1,6 @@
-
+/*
+* Notes: The @objc shows that this class & function should be exposed to Cordova.
+*/
 @objc(Payhere) class Payhere : CDVPlugin {
   @objc(checkout:) // Declare your function name.
   func checkout(command: CDVInvokedUrlCommand) { // write the function code.
