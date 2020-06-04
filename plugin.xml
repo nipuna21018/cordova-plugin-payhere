@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-payhere" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+     <name>PayHere</name>
+    <description>Cordova PayHere Plugin</description>
+    <author>Nipuna Harshana</author>
+    <license>MIT</license>
+
+    <js-module name="payhere" src="www/payhere.js">
+        <clobbers target="payhere" />
+    </js-module>
+
+    <engines>
+      <engine name="cordova" version=">=6.4.0" />
+      <engine name="cordova-ios" version=">=4.3.0" />
+      <engine name="cordova-android" version=">=5.1.0" />
+      <engine name="apple-xcode" version=">=8.0.0" />
+      <engine name="apple-ios" version=">=7.0.0" />
+    </engines>
+
+
+<platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="Payhere">
+        <param name="onload" value="true" />
+        <param name="ios-package" value="Payhere"/>
+      </feature>
+    </config-file>
+
+    <source-file src="src/ios/Payhere.swift" />
+
+    <podspec>
+      <config>
+        <source url="https://github.com/CocoaPods/Specs.git"/>
+      </config>
+      <pods use-frameworks="true">
+        <pod name="payHereSDK" spec="2.0.0" />
+      </pods>
+    </podspec>
+  </platform>
+  
+  <!-- android -->
+  <platform name="android">
+
+    <framework src="payhere.gradle" custom="true" type="gradleReference" />
+    <framework src="com.android.support.constraint:constraint-layout:1.0.2" />
+    <framework src="com.android.support:appcompat-v7:25.4.0" />
+    <framework src="com.google.code.gson:gson:2.8.0" />
+    <framework src="lk.payhere.sdk:android-payment-sdk:2.0.11" />
+
+    <config-file target="config.xml" parent="/*">
+        <feature name="Payhere">
+            <param name="android-package" value="lk.nsoft.plugins.payhere"/>
+        </feature>
+    </config-file>
+
+    <config-file target="AndroidManifest.xml" parent="/manifest">
+        <uses-permission android:name="android.permission.INTERNET" />
+    </config-file>    
+
+    <source-file src="src/android/lk/nsoft/plugins/Payhere.java" target-dir="src/lk/nsoft/plugins"/>
+  </platform>
+
+</plugin>
