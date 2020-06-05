@@ -35,6 +35,11 @@ public class Payhere extends CordovaPlugin {
             this.checkout(message, callbackContext);
             return true;
         }
+        if (action.equals("preApprove")) {
+            String message = args.getString(0);
+            this.preApprove(message, callbackContext);
+            return true;
+        }
         return false;
     }
 
@@ -43,11 +48,6 @@ public class Payhere extends CordovaPlugin {
     }
 
     private void checkout(String message, CallbackContext callbackContext) {
-        // if (message != null && message.length() > 0) {
-        //     callbackContext.success(message);
-        // } else {
-        //     callbackContext.error("Expected one non-empty string argument.");
-        // }
         LOG.d(TAG, message);
         this.callbackContext = callbackContext;
         InitRequest req = new InitRequest();
@@ -71,6 +71,37 @@ public class Payhere extends CordovaPlugin {
             req.getCustomer().getDeliveryAddress().setAddress(data.getJSONObject("shipping").getString("address"));
             req.getCustomer().getDeliveryAddress().setCity(data.getJSONObject("shipping").getString("city"));
             req.getCustomer().getDeliveryAddress().setCountry(data.getJSONObject("shipping").getString("country"));
+            //req.getItems().add(new Item(null, "Door bell wireless", 1));
+        } catch (JSONException $je) {
+            callbackContext.error("Invalid data!");
+        }
+        Intent intent = new Intent(cordova.getActivity(), PHMainActivity.class);
+        intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
+        PHConfigs.setBaseUrl(PHConfigs.SANDBOX_URL);
+        if (this.cordova != null) {
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, PAYHERE_REQUEST); //unique request ID like private final static int PAYHERE_REQUEST = 11010;        
+        }
+    }
+    private void preApprove(String message, CallbackContext callbackContext) {
+        LOG.d(TAG, message);
+        this.callbackContext = callbackContext;
+        InitPreapprovalRequest req = new InitPreapprovalRequest();
+        try {
+            JSONObject data = new JSONObject(message);
+            req.setMerchantId(data.getString("merchantId")); // Your Merchant ID
+            req.setMerchantSecret(data.getString("merchantSecret")); // Your Merchant secret
+            req.setOrderId("230000125");        // Unique Reference ID
+            req.setCurrency("LKR");             // Currency code of future payments
+            req.setItemsDescription("1 Greeting Card");
+            req.setCustom1("This is the custom 1 message");
+            req.setCustom2("This is the custom 2 message");
+            req.getCustomer().setFirstName("Saman");
+            req.getCustomer().setLastName("Perera");
+            req.getCustomer().setEmail("samanp@email.com");
+            req.getCustomer().setPhone("+947771234567");
+            req.getCustomer().getAddress().setAddress("No.01, Galle Road,");
+            req.getCustomer().getAddress().setCity("Colombo");
+            req.getCustomer().getAddress().setCountry("Sri Lanka");
             //req.getItems().add(new Item(null, "Door bell wireless", 1));
         } catch (JSONException $je) {
             callbackContext.error("Invalid data!");
