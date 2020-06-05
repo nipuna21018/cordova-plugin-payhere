@@ -36,13 +36,59 @@ import UIKit
   @objc(checkout:) // Declare your function name.
   func checkout(command: CDVInvokedUrlCommand) { // write the function code.
     self.mCalendarAccountsCallbackContext = command.callbackId
+    let requestData = command.arguments[0] as? [String:AnyObject]
     
-    let item1 = Item(id: "001", name: "PayHere Test Item 01", quantity: 1, amount: 25.00)
-    let item2 = Item(id: "002", name: "PayHere Test Item 02", quantity: 2, amount: 25.0)
-
-    self.initRequest = PHInitialRequest(merchantID: self.merchandID, notifyURL: "", firstName: "Pay", lastName: "Here", email: "test@test.com", phone: "+9477123456", address: "Colombo", city: "Colombo", country: "Sri Lanka", orderID: "001", itemsDescription: "PayHere SDK Sample", itemsMap: [item1,item2], currency: .LKR, amount: 50.00, deliveryAddress: "", deliveryCity: "", deliveryCountry: "", custom1: "custom 01", custom2: "custom 02")
+    let merchantID = requestData?["merchantId"] as? String ?? ""
+    let notifyURL = requestData?["notifyURL"] as? String ?? ""
     
+    // customer details
+    var firstName:String = ""
+    var lastName:String = ""
+    var email:String = ""
+    var phone:String = ""
+    if let customer = requestData?["customer"] as? [String:AnyObject] {
+        firstName = customer["firstName"] as? String ?? ""
+        lastName = customer["lastName"] as? String ?? ""
+        email = customer["email"] as? String ?? ""
+        phone = customer["phone"] as? String ?? ""
+    }
+    
+    // billing adress details
+    var address:String = ""
+    var city:String = ""
+    var country:String = ""
+    if let billing = requestData?["billing"] as? [String:AnyObject] {
+        address = billing["address"] as? String ?? ""
+        city = billing["city"] as? String ?? ""
+        country = billing["country"] as? String ?? ""
+    }
+    
+    //order details
+    let orderID:String? = requestData?["orderId"] as? String
+    let itemsDescription:String? = requestData?["description"] as? String
+    let itemsMap:[Item] = []
+    let currency:PHCurrency =  requestData?["currency"] as? PHCurrency ?? PHCurrency.LKR
+    let amount:Double? = requestData?["amount"] as? Double
+          
+    // delivary adress details
+    var deliveryAddress:String = ""
+    var deliveryCity:String = ""
+    var deliveryCountry:String = ""
+    if let billing = requestData?["shipping"] as? [String:AnyObject] {
+        deliveryAddress = billing["address"] as? String ?? ""
+        deliveryCity = billing["city"] as? String ?? ""
+        deliveryCountry = billing["country"] as? String ?? ""
+    }
+ 
+    // optional custom params
+    let custom1:String? = requestData?["custom1"] as? String
+    let custom2:String? = requestData?["custom2"] as? String
+            
+    self.initRequest = PHInitialRequest(merchantID: merchantID, notifyURL: notifyURL, firstName: firstName, lastName: lastName, email: email, phone: phone, address: address, city: city, country: country, orderID: orderID, itemsDescription: itemsDescription, itemsMap: itemsMap, currency: currency, amount: amount, deliveryAddress: deliveryAddress, deliveryCity: deliveryCity, deliveryCountry: deliveryCountry, custom1: custom1, custom2: custom2)
+    DispatchQueue.main.async {
     PHPrecentController.precent(from: self.viewController, isSandBoxEnabled: false, withInitRequest: self.initRequest!, delegate: self)
+    }
 
   }
+    
 }
