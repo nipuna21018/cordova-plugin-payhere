@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-payhere",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Cordova plugin to use PayHere mobile SDK in ionic projects",
   "cordova": {
     "id": "cordova-plugin-payhere",
@@ -16,12 +16,16 @@
   "keywords": [
     "ecosystem:cordova",
     "cordova-ios",
-    "cordova-android"
+    "cordova-android",
+    "payment"
   ],
   "author": "Nipuna Harshana",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nipuna21018/cordova-plugin-payhere/issues"
   },
-  "homepage": "https://github.com/nipuna21018/cordova-plugin-payhere#readme"
+  "homepage": "https://github.com/nipuna21018/cordova-plugin-payhere#readme",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
 }

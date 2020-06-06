@@ -1,8 +1,15 @@
 var exec = require("cordova/exec");
+var PLUGIN_NAME = "Payhere";
 
-exports.checkout = function (arg0, success, error) {
-  exec(success, error, "Payhere", "checkout", [arg0]);
+var Payhere = function () {};
+Payhere.checkout = function (requestData) {
+  return new Promise((resolve, reject) => {
+    cordova.exec(resolve, reject, "Payhere", "checkout", [requestData]);
+  });
 };
-exports.preApprove = function (arg0, success, error) {
-  exec(success, error, "Payhere", "preApprove", [arg0]);
+Payhere.preApprove = function (requestData) {
+  return new Promise((resolve, reject) => {
+    cordova.exec(resolve, reject, "Payhere", "preApprove", [requestData]);
+  });
 };
+module.exports = Payhere;

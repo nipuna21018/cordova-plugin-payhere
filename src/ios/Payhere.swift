@@ -93,7 +93,7 @@ import UIKit
 
         //order details
         let orderID:String? = requestData?["orderId"] as? String
-        let itemsDescription:String? = requestData?["description"] as? String
+        let itemsDescription:String? = requestData?["itemsDescription"] as? String
         let currency:PHCurrency =  requestData?["currency"] as? PHCurrency ?? PHCurrency.LKR
         let amount:Double? = requestData?["amount"] as? Double
 
