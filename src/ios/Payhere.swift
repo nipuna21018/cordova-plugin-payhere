@@ -12,15 +12,25 @@ import UIKit
     
     func onResponseReceived(response: PHResponse<Any>?) {
         let pluginResult:CDVPluginResult;
+       
+        let responseObj:NSMutableDictionary =  ["message": response?.getMessage() ?? "Payment response recieved"]
+        
         if(response?.isSuccess())!{
-            guard let resp = response?.getData() as? StatusResponse else{ return }
-                   
-            //Payment Sucess
-            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: resp.toJSONString());
+           
+            responseObj["status"] = "success"
+            responseObj["statusCode"] = "201"
+            responseObj["data"] = response?.getData() as? StatusResponse
+            
+            //Payment Sucess message
+            pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs:
+                convertToJSONString(value: responseObj));
                    
         }else{
-            let msg = response?.getMessage()
-            pluginResult = CDVPluginResult (status: CDVCommandStatus_ERROR, messageAs: msg);   
+            responseObj["status"] = "error"
+            responseObj["statusCode"] = "-1"
+            
+             //Payment error message
+            pluginResult = CDVPluginResult (status: CDVCommandStatus_ERROR, messageAs: convertToJSONString(value: responseObj));
         }
         
         // Send the function result back to Cordova.
@@ -28,8 +38,16 @@ import UIKit
     }
     
     func onErrorReceived(error: Error) {
-        print("✋ Error",error)
-        let pluginResult = CDVPluginResult (status: CDVCommandStatus_ERROR, messageAs: error.localizedDescription);
+        let nsError = (error as NSError)
+        let errorObj:NSDictionary =  [
+            "status": "error",
+            "statusCode": nsError.code,
+            "message": error.localizedDescription
+        ]
+        
+        let errorJsonString = convertToJSONString(value: errorObj)
+       
+        let pluginResult = CDVPluginResult (status: CDVCommandStatus_ERROR, messageAs: errorJsonString);
         self.commandDelegate!.send(pluginResult, callbackId: self.callbackContext);
     }
     
@@ -121,5 +139,18 @@ import UIKit
         DispatchQueue.main.async {
         PHPrecentController.precent(from: self.viewController, isSandBoxEnabled: false, withInitRequest: self.initRequest!, delegate: self)
         }
+    }
+    
+    func convertToJSONString(value: AnyObject) -> String? {
+        if JSONSerialization.isValidJSONObject(value) {
+            do{
+                let data = try JSONSerialization.data(withJSONObject: value, options: [])
+                if let string = NSString(data: data, encoding: String.Encoding.utf8.rawValue) {
+                    return string as String
+                }
+            }catch{
+            }
+        }
+        return nil
     }
 }
