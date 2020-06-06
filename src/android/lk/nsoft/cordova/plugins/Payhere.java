@@ -54,24 +54,43 @@ public class Payhere extends CordovaPlugin {
         try {
             JSONObject data = new JSONObject(message);
             req.setMerchantId(data.getString("merchantId")); // Your Merchant ID
-            req.setMerchantSecret(data.getString("merchantSecret")); // Your Merchant secret
             req.setAmount(data.getDouble("amount")); // Amount which the customer should pay
             req.setCurrency(data.getString("currency")); // Currency
             req.setOrderId(data.getString("orderId")); // Unique ID for your payment transaction
             req.setItemsDescription(data.getString("itemsDescription")); // Item title or Order/Invoice number
-            req.setCustom1(data.getString("custom1"));
-            req.setCustom2(data.getString("custom2"));
-            req.getCustomer().setFirstName(data.getJSONObject("customer").getString("firstName"));
-            req.getCustomer().setLastName(data.getJSONObject("customer").getString("lastName"));
-            req.getCustomer().setEmail(data.getJSONObject("customer").getString("email"));
-            req.getCustomer().setPhone(data.getJSONObject("customer").getString("phone"));
-            req.getCustomer().getAddress().setAddress(data.getJSONObject("billing").getString("address"));
-            req.getCustomer().getAddress().setCity(data.getJSONObject("billing").getString("city"));
-            req.getCustomer().getAddress().setCountry(data.getJSONObject("billing").getString("country"));
-            req.getCustomer().getDeliveryAddress().setAddress(data.getJSONObject("shipping").getString("address"));
-            req.getCustomer().getDeliveryAddress().setCity(data.getJSONObject("shipping").getString("city"));
-            req.getCustomer().getDeliveryAddress().setCountry(data.getJSONObject("shipping").getString("country"));
-            //req.getItems().add(new Item(null, "Door bell wireless", 1));
+            req.setCustom1(data.optString("custom1"));
+            req.setCustom2(data.optString("custom2"));
+
+            // customer details
+            if(data.has("customer")) {
+                req.getCustomer().setFirstName(data.getJSONObject("customer").optString("firstName"));
+                req.getCustomer().setLastName(data.getJSONObject("customer").optString("lastName"));
+                req.getCustomer().setEmail(data.getJSONObject("customer").optString("email"));
+                req.getCustomer().setPhone(data.getJSONObject("customer").optString("phone"));
+            }
+
+            // billing details
+            if(data.has("billing")) {
+                req.getCustomer().getAddress().setAddress(data.getJSONObject("billing").optString("address"));
+                req.getCustomer().getAddress().setCity(data.getJSONObject("billing").optString("city"));
+                req.getCustomer().getAddress().setCountry(data.getJSONObject("billing").optString("country"));
+            }
+
+            //shipping details
+            if(data.has("shipping")) {
+                req.getCustomer().getDeliveryAddress().setAddress(data.getJSONObject("shipping").optString("address"));
+                req.getCustomer().getDeliveryAddress().setCity(data.getJSONObject("shipping").optString("city"));
+                req.getCustomer().getDeliveryAddress().setCountry(data.getJSONObject("shipping").optString("country"));
+            }
+
+            if(data.has("items")) {
+                JSONArray items = data.getJSONArray("items");
+                for (int i = 0; i < items.length(); i++) {
+                    JSONObject item = items.getJSONObject(i);
+                    req.getItems().add(new Item(item.getString("id"), item.getString("name"), item.getInt("quantity"), item.getDouble("amount")));
+                }
+            }
+
         } catch (JSONException $je) {
             callbackContext.error("Invalid data!");
         }
@@ -89,20 +108,35 @@ public class Payhere extends CordovaPlugin {
         try {
             JSONObject data = new JSONObject(message);
             req.setMerchantId(data.getString("merchantId")); // Your Merchant ID
-            req.setMerchantSecret(data.getString("merchantSecret")); // Your Merchant secret
-            req.setOrderId("230000125");        // Unique Reference ID
-            req.setCurrency("LKR");             // Currency code of future payments
-            req.setItemsDescription("1 Greeting Card");
-            req.setCustom1("This is the custom 1 message");
-            req.setCustom2("This is the custom 2 message");
-            req.getCustomer().setFirstName("Saman");
-            req.getCustomer().setLastName("Perera");
-            req.getCustomer().setEmail("samanp@email.com");
-            req.getCustomer().setPhone("+947771234567");
-            req.getCustomer().getAddress().setAddress("No.01, Galle Road,");
-            req.getCustomer().getAddress().setCity("Colombo");
-            req.getCustomer().getAddress().setCountry("Sri Lanka");
-            //req.getItems().add(new Item(null, "Door bell wireless", 1));
+            req.setCurrency(data.getString("currency")); // Currency
+            req.setOrderId(data.getString("orderId")); // Unique ID for your payment transaction
+            req.setItemsDescription(data.getString("itemsDescription")); // Item title or Order/Invoice number
+            req.setCustom1(data.optString("custom1"));
+            req.setCustom2(data.optString("custom2"));
+
+            // customer details
+            if(data.has("customer")) {
+                req.getCustomer().setFirstName(data.getJSONObject("customer").optString("firstName"));
+                req.getCustomer().setLastName(data.getJSONObject("customer").optString("lastName"));
+                req.getCustomer().setEmail(data.getJSONObject("customer").optString("email"));
+                req.getCustomer().setPhone(data.getJSONObject("customer").optString("phone"));
+            }
+
+            // billing details
+            if(data.has("billing")) {
+                req.getCustomer().getAddress().setAddress(data.getJSONObject("billing").optString("address"));
+                req.getCustomer().getAddress().setCity(data.getJSONObject("billing").optString("city"));
+                req.getCustomer().getAddress().setCountry(data.getJSONObject("billing").optString("country"));
+            }
+
+            if(data.has("items")) {
+                JSONArray items = data.getJSONArray("items");
+                for (int i = 0; i < items.length(); i++) {
+                    JSONObject item = items.getJSONObject(i);
+                    req.getItems().add(new Item(item.getString("id"), item.getString("name"), item.getInt("quantity"), item.getDouble("amount")));
+                }
+            }
+
         } catch (JSONException $je) {
             callbackContext.error("Invalid data!");
         }
