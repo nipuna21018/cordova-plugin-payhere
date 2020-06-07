@@ -64,7 +64,7 @@ $ pod install
 Add the plugin to app's provider list
 
 ```ts
-import { PayHere } from "@ionic-native/payhere/ngx";
+import { PayHere } from "types-payhere/ngx";
 
 @NgModule({
   imports:  [ ... ],
@@ -79,7 +79,7 @@ In your page
 ### Checkout Payment Request:
 
 ```ts
-import { PayHere } from "@ionic-native/payhere/ngx";
+import { PayHere } from "types-payhere/ngx";
 
 constructor(private payhere: PayHere) { }
 
@@ -136,7 +136,7 @@ this.payhere.checkout(checkoutRequest).then((response) => {
 ### PreAproval Payment Request:
 
 ```ts
-import { PayHere } from "@ionic-native/payhere/ngx";
+import { PayHere } from "types-payhere/ngx";
 
 constructor(private payhere: PayHere) { }
 
