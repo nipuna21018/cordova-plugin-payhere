@@ -2,8 +2,6 @@ package lk.nsoft.cordova.plugins;
 
 import org.apache.cordova.CordovaPlugin;
 
-import com.google.gson.JsonObject;
-
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaWebView;
@@ -13,6 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.util.Log;
+
 import org.apache.cordova.LOG;
 
 /**
@@ -32,12 +32,25 @@ public class Payhere extends CordovaPlugin {
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals("checkout")) {
             String message = args.getString(0);
-            this.checkout(message, callbackContext);
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    checkout(message, callbackContext);
+                    callbackContext.success(); // Thread-safe.
+                }
+            });
+
             return true;
         }
         if (action.equals("preApprove")) {
             String message = args.getString(0);
-            this.preApprove(message, callbackContext);
+            cordova.getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    preApprove(message, callbackContext);
+                    callbackContext.success(); // Thread-safe.
+                }
+            });
             return true;
         }
         return false;
@@ -51,8 +64,14 @@ public class Payhere extends CordovaPlugin {
         LOG.d(TAG, message);
         this.callbackContext = callbackContext;
         InitRequest req = new InitRequest();
+        boolean isSandboxEnabled = false;
         try {
             JSONObject data = new JSONObject(message);
+
+            if(data.has("sandboxEnabled")) {
+                isSandboxEnabled = data.getBoolean("sandboxEnabled");
+            }
+
             req.setMerchantId(data.getString("merchantId")); // Your Merchant ID
             req.setAmount(data.getDouble("amount")); // Amount which the customer should pay
             req.setCurrency(data.getString("currency")); // Currency
@@ -96,18 +115,25 @@ public class Payhere extends CordovaPlugin {
         }
         Intent intent = new Intent(cordova.getActivity(), PHMainActivity.class);
         intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
-        PHConfigs.setBaseUrl(PHConfigs.SANDBOX_URL);
+        PHConfigs.setBaseUrl(isSandboxEnabled ? PHConfigs.SANDBOX_URL : PHConfigs.LIVE_URL);
         if (this.cordova != null) {
-            this.cordova.startActivityForResult((CordovaPlugin) this, intent, PAYHERE_REQUEST); //unique request ID like private final static int PAYHERE_REQUEST = 11010;        
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, PAYHERE_REQUEST); //unique request ID like private final static int PAYHERE_REQUEST = 11010;
         }
     }
     private void preApprove(String message, CallbackContext callbackContext) {
         LOG.d(TAG, message);
         this.callbackContext = callbackContext;
         InitPreapprovalRequest req = new InitPreapprovalRequest();
+        boolean isSandboxEnabled = false;
         try {
             JSONObject data = new JSONObject(message);
+
+            if(data.has("sandboxEnabled")) {
+              isSandboxEnabled = data.getBoolean("sandboxEnabled");
+            }
+
             req.setMerchantId(data.getString("merchantId")); // Your Merchant ID
+
             req.setCurrency(data.getString("currency")); // Currency
             req.setOrderId(data.getString("orderId")); // Unique ID for your payment transaction
             req.setItemsDescription(data.getString("itemsDescription")); // Item title or Order/Invoice number
@@ -138,11 +164,11 @@ public class Payhere extends CordovaPlugin {
             }
 
         } catch (JSONException $je) {
-            callbackContext.error("Invalid data!");
+            callbackContext.error(getFormattedResponse("error",-100,"Invalid data provided",null).toString());
         }
         Intent intent = new Intent(cordova.getActivity(), PHMainActivity.class);
         intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
-        PHConfigs.setBaseUrl(PHConfigs.SANDBOX_URL);
+        PHConfigs.setBaseUrl(isSandboxEnabled ? PHConfigs.SANDBOX_URL : PHConfigs.LIVE_URL);
         if (this.cordova != null) {
             this.cordova.startActivityForResult((CordovaPlugin) this, intent, PAYHERE_REQUEST); //unique request ID like private final static int PAYHERE_REQUEST = 11010;        
         }
@@ -150,21 +176,46 @@ public class Payhere extends CordovaPlugin {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //TODO process response
+
+        JSONObject responseObj = new JSONObject();
+
         if (requestCode == PAYHERE_REQUEST && data != null && data.hasExtra(PHConstants.INTENT_EXTRA_RESULT)) {
-            PHResponse<StatusResponse> response = (PHResponse<StatusResponse>) data
-                    .getSerializableExtra(PHConstants.INTENT_EXTRA_RESULT);
-            String msg;
+            PHResponse<StatusResponse> response = (PHResponse<StatusResponse>) data.getSerializableExtra(PHConstants.INTENT_EXTRA_RESULT);
+
             if (response.isSuccess()) {
-                msg = "Activity result:" + response.getData().toString();
-                this.callbackContext.success(msg);
+                responseObj = getFormattedResponse("success",201,"Payment completed successfully",response.getData());
             } else {
-                msg = "Result:" + response.toString();
-                this.callbackContext.success(msg);
+                responseObj = getFormattedResponse("error",-1,"Payment failed",response.getData());
             }
-            LOG.d(TAG, msg);
-            //textView.setText(msg);
+
+        }else{
+
+            if(resultCode == 0 ) {
+                responseObj = getFormattedResponse("error",0,"Cancelled by user",null);
+            }else{
+                responseObj = getFormattedResponse("error",resultCode,"Something went wrong",null);
+            }
+
         }
+
+        Log.d(TAG, responseObj.toString());
+        this.callbackContext.success(responseObj.toString());
+
+
     }
 
+    private JSONObject getFormattedResponse(String status, int statusCode, String message, StatusResponse data ){
+        JSONObject responseObj = new JSONObject();
+        try {
+            responseObj.put("status", status);
+            responseObj.put("statusCode",statusCode);
+            responseObj.put("message", message);
+            if(data!= null){
+            responseObj.put("data",data);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return responseObj;
+    }
 }
