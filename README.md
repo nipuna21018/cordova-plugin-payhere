@@ -79,7 +79,7 @@ In your page
 ### Checkout Payment Request:
 
 ```ts
-import { PayHere } from "types-payhere/ngx";
+import { PayHere, CheckoutRequest, Currency } from "types-payhere/ngx";
 
 constructor(private payhere: PayHere) { }
 
@@ -89,7 +89,7 @@ const checkoutRequest: CheckoutRequest = {
         sandboxEnabled:true // default is false
         merchantId: "11111",
         amount: 10.5,
-        currency: "LKR",
+        currency: Currency.LKR,
         orderId: "123",
         itemsDescription: "Desc",
         custom1: "",
@@ -136,7 +136,7 @@ this.payhere.checkout(checkoutRequest).then((response) => {
 ### PreAproval Payment Request:
 
 ```ts
-import { PayHere } from "types-payhere/ngx";
+import { PayHere, PreApproveRequest, Currency } from "types-payhere/ngx";
 
 constructor(private payhere: PayHere) { }
 
@@ -145,7 +145,7 @@ constructor(private payhere: PayHere) { }
 const preApproveRequest: PreApproveRequest = {
         sandboxEnabled:true // default is false
         merchantId: "11111",
-        currency: "LKR",
+        currency: Currency.LKR,
         orderId: "123",
         itemsDescription: "Desc",
         custom1: "",
