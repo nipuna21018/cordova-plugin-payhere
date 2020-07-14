@@ -41,7 +41,7 @@
     <framework src="com.android.support.constraint:constraint-layout:1.0.2" />
     <framework src="com.android.support:appcompat-v7:26.1.0" />
     <framework src="com.google.code.gson:gson:2.8.0" />
-    <framework src="lk.payhere.sdk:android-payment-sdk:2.0.11" />
+    <framework src="lk.payhere.sdk:android-payment-sdk:2.0.24" />
 
     <config-file target="config.xml" parent="/*">
         <feature name="Payhere">
