@@ -7,5 +7,5 @@ repositories {
 }
 
 dependencies {
-    implementation 'lk.payhere.sdk:android-payment-sdk:2.0.11'
+    implementation 'lk.payhere.sdk:android-payment-sdk:2.0.24'
 }
