@@ -86,8 +86,9 @@ constructor(private payhere: PayHere) { }
 ...
 
 const checkoutRequest: CheckoutRequest = {
-        sandboxEnabled:true // default is false
+        sandboxEnabled:true, // default is false
         merchantId: "11111",
+	notifyURL: "http://sample.com/notify",
         amount: 10.5,
         currency: Currency.LKR,
         orderId: "123",
@@ -143,7 +144,8 @@ constructor(private payhere: PayHere) { }
 ...
 
 const preApproveRequest: PreApproveRequest = {
-        sandboxEnabled:true // default is false
+        sandboxEnabled:true, // default is false
+	notifyURL: "http://sample.com/notify",
         merchantId: "11111",
         currency: Currency.LKR,
         orderId: "123",
