@@ -79,6 +79,11 @@ public class Payhere extends CordovaPlugin {
             req.setItemsDescription(data.getString("itemsDescription")); // Item title or Order/Invoice number
             req.setCustom1(data.optString("custom1"));
             req.setCustom2(data.optString("custom2"));
+            
+            // notify url
+            if(data.has('notifyURL')) {
+                req.setNotifyUrl(data.getString("notifyURL"));
+            }
 
             // customer details
             if(data.has("customer")) {
@@ -140,6 +145,11 @@ public class Payhere extends CordovaPlugin {
             req.setCustom1(data.optString("custom1"));
             req.setCustom2(data.optString("custom2"));
 
+            // notify url
+            if(data.has('notifyURL')) {
+                req.setNotifyUrl(data.getString("notifyURL"));
+            }
+            
             // customer details
             if(data.has("customer")) {
                 req.getCustomer().setFirstName(data.getJSONObject("customer").optString("firstName"));
