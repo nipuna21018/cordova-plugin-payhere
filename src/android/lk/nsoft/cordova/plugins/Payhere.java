@@ -81,7 +81,7 @@ public class Payhere extends CordovaPlugin {
             req.setCustom2(data.optString("custom2"));
             
             // notify url
-            if(data.has('notifyURL')) {
+            if(data.has("notifyURL")) {
                 req.setNotifyUrl(data.getString("notifyURL"));
             }
 
@@ -146,7 +146,7 @@ public class Payhere extends CordovaPlugin {
             req.setCustom2(data.optString("custom2"));
 
             // notify url
-            if(data.has('notifyURL')) {
+            if(data.has("notifyURL")) {
                 req.setNotifyUrl(data.getString("notifyURL"));
             }
             

@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-payhere",
-  "version": "0.0.6",
+  "version": "0.0.8",
   "description": "Cordova plugin to use PayHere mobile SDK in ionic projects",
   "cordova": {
     "id": "cordova-plugin-payhere",
