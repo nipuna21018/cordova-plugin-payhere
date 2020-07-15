@@ -90,10 +90,10 @@ const checkoutRequest: CheckoutRequest = {
         merchantId: "11111",
         merchantSecret: "<Add your app at Settings > Domains & Credentials, to get this>",
 	      notifyURL: "http://sample.com/notify",
-        amount: 10.5,
+        amount: 100.00,
         currency: Currency.LKR,
         orderId: "123",
-        itemsDescription: "Desc",
+        itemsDescription: "Item Desc",
         custom1: "",
         custom2: "",
         customer: {
