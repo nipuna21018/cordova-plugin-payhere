@@ -53,7 +53,7 @@ public class Payhere extends CordovaPlugin {
             });
             return true;
         }
-        return false;
+        return true;
     }
 
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -72,18 +72,15 @@ public class Payhere extends CordovaPlugin {
                 isSandboxEnabled = data.getBoolean("sandboxEnabled");
             }
 
-            req.setMerchantId(data.getString("merchantId")); // Your Merchant ID
-            req.setAmount(data.getDouble("amount")); // Amount which the customer should pay
-            req.setCurrency(data.getString("currency")); // Currency
-            req.setOrderId(data.getString("orderId")); // Unique ID for your payment transaction
-            req.setItemsDescription(data.getString("itemsDescription")); // Item title or Order/Invoice number
+            req.setMerchantId(data.getString("merchantId"));       // Your Merchant ID
+            req.setMerchantSecret(data.getString("merchantSecret")); // Your Merchant Secret (Add your app at Settings > Domains & Credentials, to get this)
+            req.setCurrency(data.getString("currency"));             // Currency code LKR/USD/GBP/EUR/AUD
+            req.setAmount(data.getDouble("amount"));             // Final Amount to be charged
+            req.setOrderId(data.getString("orderId"));        // Unique Reference ID
+            req.setNotifyUrl(data.getString("notifyURL"));        // Unique Reference ID
+            req.setItemsDescription(data.getString("itemsDescription"));  // Item description title
             req.setCustom1(data.optString("custom1"));
             req.setCustom2(data.optString("custom2"));
-            
-            // notify url
-            if(data.has("notifyURL")) {
-                req.setNotifyUrl(data.getString("notifyURL"));
-            }
 
             // customer details
             if(data.has("customer")) {
@@ -114,15 +111,16 @@ public class Payhere extends CordovaPlugin {
                     req.getItems().add(new Item(item.getString("id"), item.getString("name"), item.getInt("quantity"), item.getDouble("amount")));
                 }
             }
+            
 
         } catch (JSONException $je) {
-            callbackContext.error("Invalid data!");
+            callbackContext.error(getFormattedResponse("error",-100,"Invalid data provided",null).toString());
         }
         Intent intent = new Intent(cordova.getActivity(), PHMainActivity.class);
         intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
         PHConfigs.setBaseUrl(isSandboxEnabled ? PHConfigs.SANDBOX_URL : PHConfigs.LIVE_URL);
         if (this.cordova != null) {
-            this.cordova.startActivityForResult((CordovaPlugin) this, intent, PAYHERE_REQUEST); //unique request ID like private final static int PAYHERE_REQUEST = 11010;
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, 5435354); //unique request ID like private final static int PAYHERE_REQUEST = 11010;
         }
     }
     private void preApprove(String message, CallbackContext callbackContext) {
@@ -138,7 +136,7 @@ public class Payhere extends CordovaPlugin {
             }
 
             req.setMerchantId(data.getString("merchantId")); // Your Merchant ID
-
+            req.setMerchantSecret(data.getString("merchantSecret")); // Your Merchant Secret (Add your app at Settings > Domains & Credentials, to get this)
             req.setCurrency(data.getString("currency")); // Currency
             req.setOrderId(data.getString("orderId")); // Unique ID for your payment transaction
             req.setItemsDescription(data.getString("itemsDescription")); // Item title or Order/Invoice number
@@ -149,7 +147,7 @@ public class Payhere extends CordovaPlugin {
             if(data.has("notifyURL")) {
                 req.setNotifyUrl(data.getString("notifyURL"));
             }
-            
+
             // customer details
             if(data.has("customer")) {
                 req.getCustomer().setFirstName(data.getJSONObject("customer").optString("firstName"));
@@ -180,7 +178,7 @@ public class Payhere extends CordovaPlugin {
         intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
         PHConfigs.setBaseUrl(isSandboxEnabled ? PHConfigs.SANDBOX_URL : PHConfigs.LIVE_URL);
         if (this.cordova != null) {
-            this.cordova.startActivityForResult((CordovaPlugin) this, intent, PAYHERE_REQUEST); //unique request ID like private final static int PAYHERE_REQUEST = 11010;        
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, PAYHERE_REQUEST); //unique request ID like private final static int PAYHERE_REQUEST = 11010;
         }
     }
 

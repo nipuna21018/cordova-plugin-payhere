@@ -11,8 +11,8 @@ This plugin can be used to add native behaviour of PayHere mobile SDK into your 
 Add the plugin and type definitions to your project
 
 ```
-    cordova plugin add cordova-plugin-payhere
-    npm install types-payhere --save
+    cordova plugin add cordova-plugin-payhere@0.0.9
+    npm install types-payhere@0.0.5 --save
 ```
 
 It is also possible to install via repo url directly ( unstable )
@@ -88,7 +88,8 @@ constructor(private payhere: PayHere) { }
 const checkoutRequest: CheckoutRequest = {
         sandboxEnabled:true, // default is false
         merchantId: "11111",
-	notifyURL: "http://sample.com/notify",
+        merchantSecret: "<Add your app at Settings > Domains & Credentials, to get this>",
+	      notifyURL: "http://sample.com/notify",
         amount: 10.5,
         currency: Currency.LKR,
         orderId: "123",
@@ -145,7 +146,8 @@ constructor(private payhere: PayHere) { }
 
 const preApproveRequest: PreApproveRequest = {
         sandboxEnabled:true, // default is false
-	notifyURL: "http://sample.com/notify",
+        merchantSecret: "<Add your app at Settings > Domains & Credentials, to get this>",
+	      notifyURL: "http://sample.com/notify",
         merchantId: "11111",
         currency: Currency.LKR,
         orderId: "123",
