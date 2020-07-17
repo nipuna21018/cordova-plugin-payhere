@@ -128,7 +128,7 @@ const checkoutRequest: CheckoutRequest = {
         ],
       }
 
-this.payhere.checkout(checkoutRequest).then((response) => {
+this.payhere.checkout(checkoutRequest).then((response:any) => {
  // handle response
   console.log(JSON.parse(response));
 }, (err) => {
@@ -170,10 +170,12 @@ const preApproveRequest: PreApproveRequest = {
         items: [],
       }
 
-this.payhere.preApprove(preApproveRequest).then((response) => {
+this.payhere.preApprove(preApproveRequest).then((response:any) => {
  // handle response
+  console.log(JSON.parse(response));
 }, (err) => {
  // Handle error
+  console.log(JSON.parse(err));
 });
 ```
 
