@@ -11,7 +11,7 @@ This plugin can be used to add native behaviour of PayHere mobile SDK into your 
 Add the plugin and type definitions to your project
 
 ```
-    cordova plugin add cordova-plugin-payhere@0.0.9
+    cordova plugin add cordova-plugin-payhere@0.0.10
     npm install types-payhere@0.0.5 --save
 ```
 
@@ -130,8 +130,10 @@ const checkoutRequest: CheckoutRequest = {
 
 this.payhere.checkout(checkoutRequest).then((response) => {
  // handle response
+  console.log(JSON.parse(response));
 }, (err) => {
  // Handle error
+  console.log(JSON.parse(err));
 });
 ```
 
