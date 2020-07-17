@@ -36,7 +36,6 @@ public class Payhere extends CordovaPlugin {
                 @Override
                 public void run() {
                     checkout(message, callbackContext);
-                    callbackContext.success(); // Thread-safe.
                 }
             });
 
@@ -48,7 +47,6 @@ public class Payhere extends CordovaPlugin {
                 @Override
                 public void run() {
                     preApprove(message, callbackContext);
-                    callbackContext.success(); // Thread-safe.
                 }
             });
             return true;
@@ -120,7 +118,7 @@ public class Payhere extends CordovaPlugin {
         intent.putExtra(PHConstants.INTENT_EXTRA_DATA, req);
         PHConfigs.setBaseUrl(isSandboxEnabled ? PHConfigs.SANDBOX_URL : PHConfigs.LIVE_URL);
         if (this.cordova != null) {
-            this.cordova.startActivityForResult((CordovaPlugin) this, intent, 5435354); //unique request ID like private final static int PAYHERE_REQUEST = 11010;
+            this.cordova.startActivityForResult((CordovaPlugin) this, intent, PAYHERE_REQUEST); //unique request ID like private final static int PAYHERE_REQUEST = 11010;
         }
     }
     private void preApprove(String message, CallbackContext callbackContext) {

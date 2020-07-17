@@ -2,14 +2,14 @@ var exec = require("cordova/exec");
 var PLUGIN_NAME = "Payhere";
 
 var Payhere = function () {};
-Payhere.checkout = function (requestData) {
-  return new Promise((resolve, reject) => {
-    cordova.exec(resolve, reject, "Payhere", "checkout", [requestData]);
-  });
+Payhere.checkout = function (requestData, successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, "Payhere", "checkout", [
+    requestData,
+  ]);
 };
-Payhere.preApprove = function (requestData) {
-  return new Promise((resolve, reject) => {
-    cordova.exec(resolve, reject, "Payhere", "preApprove", [requestData]);
-  });
+Payhere.preApprove = function (requestData, successCallback, failureCallback) {
+  cordova.exec(successCallback, failureCallback, "Payhere", "preApprove", [
+    requestData,
+  ]);
 };
 module.exports = Payhere;
